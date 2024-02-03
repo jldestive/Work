@@ -17,11 +17,12 @@ class WorkFactory extends Factory
      */
     public function definition(): array
     {
-        $user =  User::factory(1)->create();
+        $user =  User::factory()->create();
+        $statudes = ['Open', 'Closed'];
 
         return [
             'description' => fake()->realText(),
-            'status' => 'Open',
+            'status' => $statudes[array_rand($statudes)],
             'user_id' => $user->id
         ];
     }
