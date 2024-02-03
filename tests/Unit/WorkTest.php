@@ -13,11 +13,7 @@ class WorkTest extends TestCase
 
     public function test_work_can_be_created(): void
     {
-        $user = User::create([
-            'name' => 'username',
-            'email' => 'useremail@email.com',
-            'password' => 'password'
-        ]);
+        $user = User::factory()->create();
 
         $work = Work::create([
             'description' => 'My first work',
@@ -29,5 +25,31 @@ class WorkTest extends TestCase
         $this->assertEquals('My first work', $work->description);
         $this->assertEquals('Open', $work->status);
         $this->assertEquals($user->id, $work->user_id);
+    }
+
+    public function test_work_can_be_updated(){
+
+        $work = Work::factory()->create();
+        $workL = $work;
+        $statudes = ['Open', 'Closed'];
+        $status = $statudes[array_rand($statudes)];
+
+        $work->update([
+            'status' => $status
+        ]);
+
+        $this->assertNotNull($work);
+        $this->assertEquals($workL->description, $work->description);
+        $this->assertEquals($status, $work->status);
+        $this->assertEquals($workL->id, $work->id);
+    }
+
+    public function test_work_can_be_deleted(){
+        $work = Work::factory()->create();
+        $work->delete();
+
+        $workN = Work::find($work->id);
+
+        $this->assertNull($workN);
     }
 }
