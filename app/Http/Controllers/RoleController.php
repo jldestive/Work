@@ -2,12 +2,11 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Work;
-use App\Http\Requests\StoreWorkRequest;
-use App\Http\Requests\UpdateWorkRequest;
-use Symfony\Component\HttpFoundation\Response;
+use App\Models\Role;
+use App\Http\Requests\StoreRoleRequest;
+use App\Http\Requests\UpdateRoleRequest;
 
-class WorkController extends Controller
+class RoleController extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -28,17 +27,15 @@ class WorkController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(StoreWorkRequest $request)
+    public function store(StoreRoleRequest $request)
     {
-        $work = $request->user()->works()->create($request->validated());
-
-        return response()->json($work, Response::HTTP_CREATED);
+        //
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(Work $work)
+    public function show(Role $role)
     {
         //
     }
@@ -46,7 +43,7 @@ class WorkController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(Work $work)
+    public function edit(Role $role)
     {
         //
     }
@@ -54,7 +51,7 @@ class WorkController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(UpdateWorkRequest $request, Work $work)
+    public function update(UpdateRoleRequest $request, Role $role)
     {
         //
     }
@@ -62,7 +59,7 @@ class WorkController extends Controller
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Work $work)
+    public function destroy(Role $role)
     {
         //
     }

@@ -11,7 +11,7 @@ class UpdateWorkRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,8 @@ class UpdateWorkRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'description' => ['required', 'string'],
+            'status' => ['required', 'in:Open,Closed']
         ];
     }
 }
