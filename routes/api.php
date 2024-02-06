@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\WorkController;
+use App\Models\RequestUser;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -28,4 +29,5 @@ Route::controller(AuthController::class)->group(function(){
 Route::middleware('auth:sanctum')->group(function(){
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
     Route::apiResource('works', WorkController::class)->names('works');
+    Route::post('users/request-work', [RequestUser::class, 'request-work'])->name('request-work');
 });

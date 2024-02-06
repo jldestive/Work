@@ -41,7 +41,11 @@ class WorkController extends Controller
      */
     public function show(Work $work)
     {
-        //
+        if($work == null){
+            return response()->json([], Response::HTTP_NOT_FOUND);
+        }
+
+        return response()->json($work, Response::HTTP_OK);
     }
 
     /**
@@ -77,4 +81,6 @@ class WorkController extends Controller
 
         return response()->json([], Response::HTTP_NO_CONTENT);
     }
+
+    
 }

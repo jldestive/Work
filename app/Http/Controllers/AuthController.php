@@ -22,8 +22,8 @@ class AuthController extends Controller
         if(!Auth::attempt($request->validated())){
             return response()->json(['message' => 'Invalid Credentials'], Response::HTTP_UNAUTHORIZED);
         }
-
-        $user = User::findOrFail($request->user()->id);
+        /***  @var App/Model/User $user */
+        $user = auth()->user();
 
         $token = $user->createToken('auth-token')->plainTextToken;
 

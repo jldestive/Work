@@ -50,6 +50,21 @@ class WorkControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_OK);
     }
 
+    public function test_can_not_update_two_or_more_users_same_work(){
+        $work = Work::factory()->create();
+        $user = User::factory()->create();
+
+        $workData = [
+            'description' => 'This is a test work 2',
+            'status' => 'Closed'
+        ];
+
+        $response = $this->actingAs($user)
+            ->putJson('api/works/' . $work->id, $workData);
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+    }
+
     public function test_can_delete_work(){
         $work = Work::factory()->create();
         $user = User::find($work->user_id);
@@ -69,5 +84,23 @@ class WorkControllerTest extends TestCase
         $this->assertDatabaseMissing(WorkUser::class, [
             'work_id' => $work->id
         ]);
+    }
+
+    public function test_can_not_find_work(){
+        $work = Work::factory()->create();
+
+        $response = $this->actingAs(User::find($work->user_id))
+            ->getJson('api/works/' . 0);
+
+        $response->assertStatus(Response::HTTP_NOT_FOUND);
+    }
+
+    public function test_can_find_work(){
+        $work = Work::factory()->create();
+
+        $response = $this->actingAs(User::find($work->user_id))
+            ->getJson('api/works/' . $work->id);
+
+        $response->assertStatus(Response::HTTP_OK);
     }
 }

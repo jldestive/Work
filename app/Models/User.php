@@ -29,14 +29,6 @@ class User extends Authenticatable
         'username'
     ];
 
-    public function password(): Attribute
-    {
-        return new Attribute(
-            get: fn ($value) => $value,
-            set: fn ($value) => Hash::make($value),
-        );
-    }
-
     /**
      * The attributes that should be hidden for serialization.
      *
@@ -57,6 +49,14 @@ class User extends Authenticatable
         'password' => 'hashed',
     ];
 
+    public function password(): Attribute
+    {
+        return new Attribute(
+            get: fn ($value) => $value,
+            set: fn ($value) => Hash::make($value),
+        );
+    }
+    
     /**
      * Get all of the works for the User
      *

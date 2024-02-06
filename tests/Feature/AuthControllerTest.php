@@ -126,4 +126,14 @@ class AuthControllerTest extends TestCase
             'message' => 'Invalid Credentials'
         ]);
     }
+
+    public function test_can_login_admin(): void
+    {
+        $response = $this->postJson(route('login'), [
+            'email' => 'admin@email.com',
+            'password' => '12345678'
+        ]);
+
+        $response->assertStatus(Response::HTTP_OK);
+    }
 }
