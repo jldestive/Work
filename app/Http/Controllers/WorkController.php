@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Work;
 use App\Http\Requests\StoreWorkRequest;
 use App\Http\Requests\UpdateWorkRequest;
+use Illuminate\Support\Facades\Auth;
 use Symfony\Component\HttpFoundation\Response;
 
 class WorkController extends Controller
@@ -56,7 +57,15 @@ class WorkController extends Controller
      */
     public function update(UpdateWorkRequest $request, Work $work)
     {
-        //
+        $this->authorize('update', $work);
+
+        $work->update([
+            'description' => $request->description,
+            'status' => $request->status,
+            'user_id' => Auth::id()
+        ]);
+
+        return response()->json($work, Response::HTTP_OK);
     }
 
     /**
