@@ -20,7 +20,7 @@ class AuthController extends Controller
 
     public function login(LoginRequest $request){
         if(!Auth::attempt($request->validated())){
-            return response()->json([], Response::HTTP_UNAUTHORIZED);
+            return response()->json(['message' => 'Invalid Credentials'], Response::HTTP_UNAUTHORIZED);
         }
 
         $user = User::findOrFail($request->user()->id);

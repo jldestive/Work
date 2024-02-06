@@ -73,6 +73,8 @@ class WorkController extends Controller
      */
     public function destroy(Work $work)
     {
-        //
+        $work->delete();
+
+        return response()->json([], Response::HTTP_NO_CONTENT);
     }
 }

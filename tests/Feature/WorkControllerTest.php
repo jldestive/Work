@@ -2,8 +2,10 @@
 
 namespace Tests\Feature;
 
+use App\Models\RequestUser;
 use App\Models\User;
 use App\Models\Work;
+use App\Models\WorkUser;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -46,6 +48,26 @@ class WorkControllerTest extends TestCase
             ->putJson('api/works/' . $work->id, $workData);
 
         $response->assertStatus(Response::HTTP_OK);
+    }
 
+    public function test_can_delete_work(){
+        $work = Work::factory()->create();
+        $user = User::find($work->user_id);
+        $userTemp = User::factory()->create();
+
+        $userTemp->requests()->attach($work->id);
+        $userTemp->userWorks()->attach($work->id);
+
+        $response = $this->actingAs(User::find($work->id))
+            ->deleteJson('api/works/' . $work->id);
+
+        $response->assertStatus(Response::HTTP_NO_CONTENT);
+        $this->assertModelMissing($work);
+        $this->assertDatabaseMissing(RequestUser::class, [
+            'work_id' => $work->id
+        ]);
+        $this->assertDatabaseMissing(WorkUser::class, [
+            'work_id' => $work->id
+        ]);
     }
 }
