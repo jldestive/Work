@@ -13,7 +13,8 @@ class AuthControllerTest extends TestCase
 {
     use DatabaseTransactions;
 
-    public function test_can_register_user(): void{
+    public function test_can_register_user(): void
+    {
         $response = $this->postJson(route('register'), [
             'name' => 'Test User',
             'email' => 'test_from_phpunit@test.com',
