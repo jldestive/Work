@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\User;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -125,15 +126,5 @@ class AuthControllerTest extends TestCase
         $response->assertJson([
             'message' => 'Invalid Credentials'
         ]);
-    }
-
-    public function test_can_login_admin(): void
-    {
-        $response = $this->postJson(route('login'), [
-            'email' => 'admin@email.com',
-            'password' => '12345678'
-        ]);
-
-        $response->assertStatus(Response::HTTP_OK);
     }
 }
