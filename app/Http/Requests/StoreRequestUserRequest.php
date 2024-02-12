@@ -11,7 +11,7 @@ class StoreRequestUserRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,7 +22,7 @@ class StoreRequestUserRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'work_id' => ['required', 'exists:works,id']
         ];
     }
 }

@@ -18,11 +18,10 @@ class WorkFactory extends Factory
     public function definition(): array
     {
         $user =  User::factory()->create();
-        $statudes = ['Open', 'Closed'];
 
         return [
             'description' => fake()->realText(),
-            'status' => $statudes[array_rand($statudes)],
+            'status' => 'Open',
             'user_id' => $user->id
         ];
     }

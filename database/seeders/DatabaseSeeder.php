@@ -17,12 +17,5 @@ class DatabaseSeeder extends Seeder
     {
         $this->call(UserSeeder::class);
         $this->call(WorkSeeder::class);
-
-        User::create([
-            'name' => 'admin',
-            'email' => 'admin@email.com',
-            'username' => 'admin',
-            'password' => '12345678'
-        ]);
     }
 }

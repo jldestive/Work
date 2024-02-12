@@ -13,7 +13,7 @@ class WorkPolicy
      */
     public function viewAny(User $user): bool
     {
-        // 
+        //
     }
 
     /**

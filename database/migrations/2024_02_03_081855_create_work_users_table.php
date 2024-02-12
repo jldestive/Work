@@ -13,7 +13,7 @@ return new class extends Migration
     {
         Schema::create('work_users', function (Blueprint $table) {
             $table->id();
-            $table->enum('status', ['Working', 'Dismissed', 'Resignation'])->default('Working');
+            $table->enum('status', ['Working', 'Dismissed', 'Resignation', 'Finished'])->default('Working');
             $table->foreignId('user_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->foreignId('work_id')->constrained()->cascadeOnDelete()->cascadeOnUpdate();
             $table->timestamps();
