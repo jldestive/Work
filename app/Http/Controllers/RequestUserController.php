@@ -69,7 +69,7 @@ class RequestUserController extends Controller
         if($requestUser == null){
             return response()->json(null, Response::HTTP_NOT_FOUND);
         }
-        
+
         return response()->json($requestUser, Response::HTTP_OK);
     }
 
@@ -102,6 +102,8 @@ class RequestUserController extends Controller
      */
     public function destroy(RequestUser $requestUser)
     {
-        //
+        $requestUser->delete();
+
+        return response()->json(null, Response::HTTP_NO_CONTENT);
     }
 }
