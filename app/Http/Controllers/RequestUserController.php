@@ -86,6 +86,8 @@ class RequestUserController extends Controller
      */
     public function update(UpdateRequestUserRequest $request, RequestUser $requestUser)
     {
+        $this->authorize('update', $requestUser);
+        
         $work = Work::find($requestUser->work_id);
         if($work->status == 'Closed'){
             return response()->json(['message' => 'This work is closed'], Response::HTTP_BAD_REQUEST);

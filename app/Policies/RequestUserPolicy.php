@@ -4,6 +4,7 @@ namespace App\Policies;
 
 use App\Models\RequestUser;
 use App\Models\User;
+use App\Models\Work;
 use Illuminate\Auth\Access\Response;
 
 class RequestUserPolicy
@@ -11,7 +12,7 @@ class RequestUserPolicy
     /**
      * Determine whether the user can view any models.
      */
-    public function viewAny(User $user): bool
+    public function viewAny(User $user)
     {
         //
     }
@@ -19,7 +20,7 @@ class RequestUserPolicy
     /**
      * Determine whether the user can view the model.
      */
-    public function view(User $user, RequestUser $requestUser): bool
+    public function view(User $user, RequestUser $requestUser)
     {
         //
     }
@@ -27,7 +28,7 @@ class RequestUserPolicy
     /**
      * Determine whether the user can create models.
      */
-    public function create(User $user): bool
+    public function create(User $user)
     {
         //
     }
@@ -35,15 +36,21 @@ class RequestUserPolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, RequestUser $requestUser): bool
+    public function update(User $user, RequestUser $requestUser)
     {
-        //
+        $work =  Work::find($requestUser->work_id);
+        
+        if($user->id != $work->user_id){
+            return Response::deny('You do not have permission to modify this information.');
+        }
+
+        return Response::allow();
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, RequestUser $requestUser): bool
+    public function delete(User $user, RequestUser $requestUser)
     {
         //
     }
@@ -51,7 +58,7 @@ class RequestUserPolicy
     /**
      * Determine whether the user can restore the model.
      */
-    public function restore(User $user, RequestUser $requestUser): bool
+    public function restore(User $user, RequestUser $requestUser)
     {
         //
     }
@@ -59,7 +66,7 @@ class RequestUserPolicy
     /**
      * Determine whether the user can permanently delete the model.
      */
-    public function forceDelete(User $user, RequestUser $requestUser): bool
+    public function forceDelete(User $user, RequestUser $requestUser)
     {
         //
     }

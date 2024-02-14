@@ -84,10 +84,11 @@ class RequestUserControllerTest extends TestCase
 
     public function test_can_approved_request_user(){
         $work = Work::factory()->create();
-        $user = User::factory()->create();
+        $user = User::find($work->user_id);
+        $otherUser = User::factory()->create();
 
         $requestUser = RequestUser::create([
-            'user_id' => $user->id,
+            'user_id' => $otherUser->id,
             'work_id' => $work->id
         ]);
 
@@ -99,17 +100,18 @@ class RequestUserControllerTest extends TestCase
         $response->assertJson([
             'id' => $requestUser->id,
             'work_id' => $work->id,
-            'user_id' => $user->id,
+            'user_id' => $otherUser->id,
             'status' => 'Approved'
         ]);
     }
 
     public function test_can_reject_request_user(){
         $work = Work::factory()->create();
-        $user = User::factory()->create();
+        $user = User::find($work->user_id);
+        $otherUser = User::factory()->create();
 
         $requestUser = RequestUser::create([
-            'user_id' => $user->id,
+            'user_id' => $otherUser->id,
             'work_id' => $work->id
         ]);
 
@@ -121,19 +123,20 @@ class RequestUserControllerTest extends TestCase
         $response->assertJson([
             'id' => $requestUser->id,
             'work_id' => $work->id,
-            'user_id' => $user->id,
+            'user_id' => $otherUser->id,
             'status' => 'Reject'
         ]);
     }
 
     public function test_can_not_update_status_if_work_is_closed(){
         $work = Work::factory()->create();
-        $user = User::factory()->create();
+        $user = User::find($work->user_id);
+        $otherUser = User::factory()->create();
         $work->status = 'Closed';
         $work->save();
 
        $requestUser = RequestUser::create([
-            'user_id' => $user->id,
+            'user_id' => $otherUser->id,
             'work_id' => $work->id
         ]);
 
@@ -144,6 +147,25 @@ class RequestUserControllerTest extends TestCase
         $response->assertStatus(Response::HTTP_BAD_REQUEST);
         $response->assertJson([
             'message' => 'This work is closed'
+        ]);
+    }
+
+    public function test_can_not_update_status_for_other_user(){
+        $work = Work::factory()->create();
+        $otherUser = User::factory()->create();
+
+       $requestUser = RequestUser::create([
+            'user_id' => $otherUser->id,
+            'work_id' => $work->id
+        ]);
+
+        $response =  $this->actingAs($otherUser)->putJson('api/request-user/' . $requestUser->id, [
+            'status' => 'Approved'
+        ]);
+
+        $response->assertStatus(Response::HTTP_FORBIDDEN);
+        $response->assertJson([
+            'message' => 'You do not have permission to modify this information.'
         ]);
     }
 }
