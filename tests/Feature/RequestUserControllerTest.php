@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\RequestUser;
 use App\Models\User;
 use App\Models\Work;
+use App\Models\WorkUser;
 use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Foundation\Testing\WithFaker;
@@ -36,7 +37,6 @@ class RequestUserControllerTest extends TestCase
 
     public function test_can_not_request_user_to_work_for_the_same_user(){
         $work = Work::factory()->create();
-        $work->save();
         $user = User::find($work->user_id);
 
         $response = $this->actingAs($user)->postJson('api/request-user', [
@@ -92,6 +92,16 @@ class RequestUserControllerTest extends TestCase
             'work_id' => $work->id
         ]);
 
+        $userWork = WorkUser::create([
+            'user_id' => $otherUser->id,
+            'work_id' => $work->id
+        ]);
+
+        $requestUser = RequestUser::create([
+            'user_id' => $otherUser->id,
+            'work_id' => $work->id
+        ]);
+
         $response =  $this->actingAs($user)->putJson('api/request-user/' . $requestUser->id, [
             'status' => 'Approved'
         ]);
@@ -125,6 +135,31 @@ class RequestUserControllerTest extends TestCase
             'work_id' => $work->id,
             'user_id' => $otherUser->id,
             'status' => 'Reject'
+        ]);
+    }
+
+    public function test_can_not_update_status_in_request_user(){
+        $work = Work::factory()->create();
+        $user = User::find($work->user_id);
+        $otherUser = User::factory()->create();
+        $requestUser = RequestUser::create([
+            'user_id' => $otherUser->id,
+            'work_id' => $work->id
+        ]);
+        sleep(1);
+
+        $userWork = WorkUser::create([
+            'user_id' => $otherUser->id,
+            'work_id' => $work->id
+        ]);
+
+        $response = $this->actingAs($user)->putJson('api/request-user/'. $requestUser->id, [
+            'status' => 'Approved'
+        ]);
+
+        $response->assertStatus(Response::HTTP_BAD_REQUEST);
+        $response->assertJson([
+            'message' => 'This request can not modify because the user is working in that work'
         ]);
     }
 
