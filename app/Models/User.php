@@ -56,7 +56,7 @@ class User extends Authenticatable
             set: fn ($value) => Hash::make($value),
         );
     }
-    
+
     /**
      * Get all of the works for the User
      *
@@ -85,5 +85,32 @@ class User extends Authenticatable
     public function userWorks(): BelongsToMany
     {
         return $this->belongsToMany(Work::class, 'work_users', 'user_id', 'work_id')->withPivot('id', 'status')->withTimestamps();
+    }
+
+    /**
+     * The roles that belong to the User
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsToMany
+     */
+    public function roles(): BelongsToMany
+    {
+        return $this->belongsToMany(Role::class);
+    }
+
+    public function permissions()
+    {
+        return $this->roles()->with('permissions')->get()->pluck('permissions')->flatten()->pluck('name')->unique();
+    }
+
+    public function blockUsers()
+    {
+        return $this->belongsToMany(User::class, 'blocks', 'user_id', 'blocked_user_id');
+    }
+
+    public function hasPermission($permission)
+    {
+        return $this->roles()->whereHas('permissions', function($query) use ($permission){
+            $query->where('name', $permission);
+        })->exists();
     }
 }

@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Http\Requests\StoreRoleRequest;
 use App\Http\Requests\UpdateRoleRequest;
+use App\Models\Permission;
+use App\Models\User;
+use Illuminate\Http\Request;
 
 class RoleController extends Controller
 {
@@ -29,7 +32,20 @@ class RoleController extends Controller
      */
     public function store(StoreRoleRequest $request)
     {
-        //
+        $role = Role::create([
+            'name' => $request->name
+        ]);
+
+        $role->load('permissions');
+
+        foreach($request->permissions as $permission){
+            $role->permissions()->attach(Permission::where('name', $permission)->first());
+        }
+
+        return response()->json([
+            'message' => 'Role created successfully',
+            'role' => $role
+        ]);
     }
 
     /**
@@ -53,7 +69,21 @@ class RoleController extends Controller
      */
     public function update(UpdateRoleRequest $request, Role $role)
     {
-        //
+        $this->authorize('update', $role);
+
+        $role->update([
+            'name' => $request->name
+        ]);
+
+        $role->permissions()->detach();
+        foreach($request->permissions as $permission){
+            $role->permissions()->attach(Permission::where('name', $permission)->first());
+        }
+
+        return response()->json([
+            'message' => 'Role updated successfully',
+            'role' => $role
+        ]);
     }
 
     /**
@@ -61,6 +91,29 @@ class RoleController extends Controller
      */
     public function destroy(Role $role)
     {
-        //
+        $this->authorize('delete', $role);
+        $role->delete();
+
+        return response()->json([
+            'message' => 'Role deleted successfully'
+        ]);
+    }
+
+    public function assignRole(Request $request, Role $role)
+    {
+        $this->authorize('assignRole', $role);
+
+        $request->validate([
+            'user_id' => ['required', 'exists:users,id']
+        ]);
+
+        $user = User::find($request->user_id);
+        $user->roles()->detach();
+        $user->roles()->attach($role);
+
+        return response()->json([
+            'message' => 'Role assigned successfully'
+        ]);
+
     }
 }

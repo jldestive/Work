@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RequestUserController;
+use App\Http\Controllers\RoleController;
 use App\Http\Controllers\WorkController;
 use App\Http\Controllers\WorkUserController;
 use App\Models\RequestUser;
@@ -35,4 +36,7 @@ Route::middleware('auth:sanctum')->group(function(){
     Route::apiResource('request-user', RequestUserController::class)->names('request-users');
 
     Route::apiResource('work-user', WorkUserController::class)->names('work-user');
+
+    Route::apiResource('roles', RoleController::class)->names('roles');
+    Route::post('/roles/{role}/assign', [RoleController::class, 'assignRole'])->name('roles.assign');
 });

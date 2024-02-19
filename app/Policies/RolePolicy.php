@@ -35,17 +35,31 @@ class RolePolicy
     /**
      * Determine whether the user can update the model.
      */
-    public function update(User $user, Role $role): bool
+    public function update(User $user, Role $role): Response
     {
-        //
+        if($role->name === 'admin'){
+            return Response::deny('You cannot update the admin role');
+        }
+
+        return $user->hasPermission('create-role')
+            ? Response::allow()
+            : Response::deny('You do not have permission to update a role');
     }
 
     /**
      * Determine whether the user can delete the model.
      */
-    public function delete(User $user, Role $role): bool
+    public function delete(User $user, Role $role): Response
     {
-        //
+        if(!$user->hasPermission('delete-role')){
+            return Response::deny('You do not have permission to delete a role');
+        }
+
+        if($role->name === 'admin'){
+            return Response::deny('You cannot delete the admin role');
+        }
+
+        return Response::allow();
     }
 
     /**
@@ -62,5 +76,21 @@ class RolePolicy
     public function forceDelete(User $user, Role $role): bool
     {
         //
+    }
+
+    /**
+     * Determine whether the user can assign a role to a user.
+     */
+    public function assignRole(User $user, Role $role): Response
+    {
+        if(!$user->hasPermission('assign-role')){
+            return Response::deny('You do not have permission to assign a role');
+        }
+
+        if($role->name === 'admin'){
+            return Response::deny('You cannot assign the admin role');
+        }
+
+        return Response::allow();
     }
 }
