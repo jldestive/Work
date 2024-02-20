@@ -38,7 +38,7 @@ class WorkUserController extends Controller
             return response()->json(['message' => 'The user created this work'], Response::HTTP_BAD_REQUEST);
         }
 
-        if($work->status != 'Closed'){
+        if($work->status == 'Closed'){
             return response()->json(['message' => 'This work is closed'], Response::HTTP_BAD_REQUEST);
         }
 
