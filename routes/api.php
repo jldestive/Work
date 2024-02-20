@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\RequestUserController;
 use App\Http\Controllers\RoleController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\WorkController;
 use App\Http\Controllers\WorkUserController;
 use App\Models\RequestUser;
@@ -31,6 +32,10 @@ Route::controller(AuthController::class)->group(function(){
 
 Route::middleware('auth:sanctum')->group(function(){
     Route::post('logout', [AuthController::class, 'logout'])->name('logout');
+
+    Route::put('/user', [UserController::class, 'update'])->name('users.update');
+    Route::post('/user/avatar', [UserController::class, 'updateAvatar'])->name('users.update-avatar');
+
     Route::apiResource('works', WorkController::class)->names('works');
 
     Route::apiResource('request-user', RequestUserController::class)->names('request-users');
